@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# FaceGallery – Python package requirements
+# Install with: pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Core GUI ─────────────────────────────────────────────────────────────────
+PyQt6>=6.5.0
+
+# ── Image processing ─────────────────────────────────────────────────────────
+Pillow>=10.0.0
+
+# ── Web server ───────────────────────────────────────────────────────────────
+Flask>=3.0.0
+
+# ── Numerical computing (embeddings, clustering) ──────────────────────────────
+numpy>=1.24.0
+
+# ── Face recognition (choose ONE — all three are listed as optional) ──────────
+# Option A: DeepFace (Plug-and-play on Windows, no compiler needed)
+deepface>=0.0.89
+tf-keras>=2.15.0
+tensorflow>=2.15.0
+opencv-python>=4.8.0
+pandas>=2.0.0
+gdown>=4.7.0
+
+# Option B: Mediapipe (Ultra-light detection fallback)
+mediapipe>=0.10.0
+
+# ── Perceptual hashing (optional, for duplicate detection) ───────────────────
+# imagehash>=4.3.1
+
+# ── HEIC / HEIF support on Windows / Linux (optional) ───────────────────────
+# pillow-heif>=0.13.0
+
+# ── Packaging helpers (development only) ─────────────────────────────────────
+# pyinstaller>=6.0.0
