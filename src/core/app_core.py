@@ -14,7 +14,7 @@ import numpy as np
 
 from ..db.manager import DatabaseManager
 from ..face_engine.clusterer import (
-    cluster_embeddings, find_best_match, SIMILARITY_THRESHOLD
+    cluster_embeddings, find_best_match, get_threshold
 )
 from ..utils.helpers import bytes_to_embedding
 
@@ -31,7 +31,7 @@ class AppCore:
     # Face clustering / person assignment                                  #
     # ─────────────────────────────────────────────────────────────────── #
 
-    def cluster_unknown_faces(self, threshold: float = SIMILARITY_THRESHOLD) -> List[dict]:
+    def cluster_unknown_faces(self, threshold: float = None) -> List[dict]:
         """
         Cluster all unassigned faces and return groups with person suggestions.
         Each group contains face_ids and an optional suggestion (person_id).
@@ -83,7 +83,7 @@ class AppCore:
 
         return results
 
-    def auto_assign_face(self, face_id: int, threshold: float = SIMILARITY_THRESHOLD) -> Optional[int]:
+    def auto_assign_face(self, face_id: int, threshold: float = None) -> Optional[int]:
         """
         Try to match *face_id* against known persons.
         Returns person_id if matched, None otherwise.
@@ -164,7 +164,7 @@ class AppCore:
                     known.append((person["person_id"], bytes_to_embedding(pf["embedding"])))
         return known
 
-    def auto_match_all_unassigned(self, threshold: float = SIMILARITY_THRESHOLD) -> int:
+    def auto_match_all_unassigned(self, threshold: float = None) -> int:
         """
         Try to auto-match all unassigned faces to existing persons.
         Uses all known embeddings for higher accuracy than simple centroids.

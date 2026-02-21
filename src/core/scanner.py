@@ -129,7 +129,7 @@ class PhotoScanner:
     def _load_known_faces(self) -> List[tuple]:
         """Load ALL embeddings for ALL named people for maximum matching accuracy."""
         from ..utils.helpers import bytes_to_embedding
-        
+
         known = []
         persons = self.db.get_all_persons()
         for p in persons:
@@ -137,18 +137,19 @@ class PhotoScanner:
             for f in faces:
                 if f["embedding"]:
                     emb = bytes_to_embedding(f["embedding"])
-                    known.append((p["person_id"], emb))
+                    if emb is not None and emb.shape[0] > 0:
+                        known.append((p["person_id"], emb))
+        logger.info("Loaded %d known face embeddings across %d people", len(known), len(persons))
         return known
 
     def _find_match(self, face_emb: np.ndarray, known_faces: List[tuple]) -> Optional[int]:
-        """Simple cosine similarity check against known faces."""
+        """Match a detected face against known persons using per-person voting."""
         if not known_faces or face_emb is None:
             return None
-        
+
         from ..face_engine.clusterer import find_best_match
-        
-        # known_faces is already list of (id, np_array)
-        return find_best_match(face_emb, known_faces)
+        # threshold=None → get_threshold() is called inside, uses current backend
+        return find_best_match(face_emb, known_faces, threshold=None)
 
     def _index_photo(self, img_path: str) -> Optional[int]:
         """Insert/update a photo record; return photo_id."""

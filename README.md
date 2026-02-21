@@ -13,14 +13,10 @@
   - **Dlib** (Classic & Reliable)
 - **Face Clustering**: Automatically groups similar unknown faces together, making it easy to name hundreds of photos in just a few clicks.
 - **Local Web Server**: Host a local gallery on your Wi-Fi so other devices (phones, tablets, laptops) can browse your photos securely.
-- **Web Management & Upload**: 
-  - Create new server folders and upload photos directly from your browser.
-  - User-specific upload directories: Folders are created under a central `/uploads` directory, with user-specific prefixes (e.g., `/uploads/username-myfolder`). The web UI displays only the relative folder name (`myfolder`).
-  - Role-based access: Administrators can delegate upload permissions to specific users.
-  - Ownership: Users can be restricted to managing only the folders they created.
+- **Web Management & Upload**: Create new server folders and upload photos directly from your browser. User-specific upload directories: Folders are created under a central `/uploads` directory, with user-specific prefixes (e.g., `/uploads/username-myfolder`). The web UI displays only the relative folder name (`myfolder`). Role-based access: Administrators can delegate upload permissions to specific users. Ownership: Users can be restricted to managing only the folders they created.
 - **Web Interface Face Naming & Editing**: Name unknown faces directly in the web browser with AI-powered grouping and auto-matching, and also edit existing face-to-person assignments or rename people directly from image views.
-- **Multi-User Access**: Secure the web interface with per-user PIN codes and granular roles (Admin, Uploader, Viewer).
-- **Fast Search**: Browse your library by person, folder, or date.
+- **Multi-User Access**: Secure the web interface with per-user PIN codes and granular roles: `Admin` (full control), `Uploader` (can manage their own folders and upload photos), and `Viewer` (can only browse allowed persons).
+- **Fast Search & Filtering**: Browse your library by person, folder, and date, with additional filtering for group photos and solo photos.
 - **Export Tools**: Easily package selected photos into ZIP files.
 - **Rich User Interface**: A modern, dark-themed GUI built with PyQt6.
 
@@ -54,12 +50,13 @@
    pip install -r requirements.txt
    ```
 
-3. **Setup AI Models (Manual Setup)**:
-   For offline usage, place the face recognition weights manually:
-   - **Windows**: Create the directory `%USERPROFILE%\.deepface\weights\` and place `facenet512_weights.h5` inside.
-   - **Linux**: Create the directory `~/.deepface/weights/` and place `facenet512_weights.h5` inside.
-   - **macOS**: Create the directory `~/.deepface/weights/` and place `facenet512_weights.h5` inside.
-   - Download `facenet512_weights.h5` and place it in the respective folder.
+3. **Setup AI Models (Manual Setup for DeepFace)**:
+   For the DeepFace backend to work offline (which provides embeddings and a robust detector), you need to manually place its `facenet512_weights.h5` file.
+   - Download `facenet512_weights.h5` (approx. 90MB) from its official source or a reliable mirror.
+   - Place it in the appropriate DeepFace weights directory:
+     - **Windows**: `C:\Users\<YourUser>\.deepface\weights\`
+     - **Linux/macOS**: `~/.deepface/weights/`
+   Other AI backends (InsightFace, Mediapipe, Dlib, OpenCV) generally download their models on first use or are included in their package.
 
 ---
 
@@ -110,12 +107,12 @@ If you want to run FaceGallery as a server without the desktop interface:
 
 ## 📋 Technical Details
 
-- **Technical Details**:
-- **Static File Serving**: Improved and robust static file serving for web assets like logos and favicons.
-- **Database**: SQLite with Write-Ahead Logging (WAL).
+- **Database**: SQLite with Write-Ahead Logging (WAL) for better concurrency and durability.
 - **Path Handling**: Standardized absolute pathing for cross-platform and multi-environment reliability.
 - **Security**: PIN-based authentication with salted SHA-256 hashing.
-- **AI Backend**: Modular design allowing fallback between InsightFace, DeepFace, and Dlib.
+- **AI Backend**: Modular design allowing auto-detection and fallback between InsightFace, DeepFace (RetinaFace), Mediapipe, Dlib, and OpenCV Haar Cascades.
+- **Static File Serving**: Robust static file serving for web assets like logos and favicons.
+
 
 ---
 
@@ -123,4 +120,3 @@ If you want to run FaceGallery as a server without the desktop interface:
 
 **Dipta Roy**  
 Version: 1.1.0  
-License: MIT

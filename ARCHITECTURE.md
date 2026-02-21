@@ -28,7 +28,7 @@ Architecture (plain text diagram):
 │  │  (src/db)             │  │  (src/face_engine)                    │  │
 │  │  DatabaseManager      │  │  detector.py  → insightface /         │  │
 │  │  schema.py (SQL DDL)  │  │               face_recognition /      │  │
-│  │  SQLite WAL mode      │  │               deepface (auto-detect)   │  │
+│  │  SQLite WAL mode      │  │               deepface / mediapipe / opencv (auto-detect)      │  │
 │  └───────────────────────┘  │  clusterer.py → cosine-distance       │  │
 │                              │               greedy clustering        │  │
 │                              └───────────────────────────────────────┘  │
@@ -42,13 +42,15 @@ Architecture (plain text diagram):
 │  ┌──────────────────────────────────────────────────────────────────┐  │
 │  │    6. Local Web Server Layer (src/web)                           │  │
 │  │  Flask app running in daemon thread (port 5050, 0.0.0.0)        │  │
-│  │  PIN-based session auth, person/photo browse, ZIP export         │  │
-│  │  User-specific folder management & uploads (relative paths in UI)│  │
-│  │  Face editing capabilities: rename people, reassign faces        │  │
-│  │  Improved static file serving                                    │  │
-│  │  REST API: /api/persons  /api/photos  /thumb/<id>  /photo/<id>  │  │
-│  │            /api/photo/<id>/faces                               │  │
-│  │  Routes:  /admin/face/<id>/edit                                │  │
+│  │  PIN-based session auth, user management, person/photo browse,   │  │
+│  │  ZIP export, face editing (rename people, reassign faces),       │  │
+│  │  user-specific folder management & uploads (relative paths in UI),│  │
+│  │  real-time scan progress, photo filtering (groups/solos).        │  │
+│  │  REST API: /api/persons, /api/photos, /thumb/<id>, /photo/<id>, │  │
+│  │            /face_thumb/<id>, /api/photo/<id>/faces,              │  │
+│  │            /api/photo/<id>/faces/manual (manual face adding).    │  │
+│  │  Routes:  /admin, /admin/users, /admin/folders, /admin/naming,  │  │
+│  │            /admin/person/<id>/faces, /admin/face/<id>/edit.    │  │
 │  └──────────────────────────────────────────────────────────────────┘  │
 │                                                                        │
 └────────────────────────────────────────────────────────────────────────┘
@@ -61,7 +63,8 @@ photos            – image file records (path, hash, EXIF, thumbnail)
 faces             – detected faces with bbox + embedding blobs
 persons           – named individuals
 person_face_mappings – many-to-many faces ↔ persons
-users             – web access accounts (username + PIN hash)
+users             – web access accounts (username + PIN hash, role, can_upload, created_at, last_login)
+user_person_permissions – maps which persons a user can view
 scan_folders      – persisted folder list for re-indexing (includes created_by for ownership)
 settings          – key/value app configuration
 
@@ -77,22 +80,22 @@ FaceGallary/
 ├── uploads/                  ← centralized directory for user-managed photos
 ├── src/
 │   ├── db/
-│   │   ├── schema.py         ← CREATE TABLE SQL
-│   │   └── manager.py        ← DatabaseManager (CRUD)
+│   │   ├── schema.py         ← Defines SQLite table schemas (SQL DDL).
+│   │   └── manager.py        ← Manages SQLite connection and provides CRUD operations for all tables.
 │   ├── face_engine/
-│   │   ├── detector.py       ← multi-backend face detection
-│   │   └── clusterer.py      ← cosine-distance clustering
+│   │   ├── detector.py       ← Handles multi-backend face detection (InsightFace, DeepFace, Mediapipe, Dlib, OpenCV) and embedding extraction.
+│   │   └── clusterer.py      ← Implements cosine-distance greedy clustering for face grouping.
 │   ├── core/
-│   │   ├── scanner.py        ← filesystem + photo indexer
-│   │   └── app_core.py       ← business logic facade
+│   │   ├── scanner.py        ← Scans filesystem for photos, indexes them, and dispatches face detection.
+│   │   └── app_core.py       ← Central business logic facade, bridging DB and face engine for clustering, person assignment, photo filtering, and export.
 │   ├── gui/
-│   │   ├── main_window.py    ← MainWindow (PyQt6)
-│   │   ├── dialogs.py        ← Scan / FaceNaming / Users / Settings dialogs
-│   │   └── widgets.py        ← reusable thumbnail widgets
+│   │   ├── main_window.py    ← Main PyQt6 desktop application window, orchestrates UI.
+│   │   ├── dialogs.py        ← PyQt6 dialogs for scanning, face naming, user management, and settings.
+│   │   └── widgets.py        ← Reusable PyQt6 custom widgets, like photo and face thumbnails.
 │   ├── web/
-│   │   └── server.py         ← Flask web server
+│   │   └── server.py         ← Flask web server, defines all web routes, API endpoints, and HTML templates.
 │   └── utils/
-│       └── helpers.py        ← shared utility functions
+│       └── helpers.py        ← Collection of shared utility functions (image processing, hashing, network).
 ├── resources/
 │   └── icons/                ← (reserved for icons)
 └── tests/                    ← (reserved for unit tests)
