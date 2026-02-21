@@ -1,3 +1,5 @@
+![FaceGallery](./resources/icons/app-logo.png)
+
 # 📷 FaceGallery
 
 **FaceGallery** is a cross-platform, privacy-focused offline desktop photo manager. It uses advanced AI to automatically detect, cluster, and organize faces in your local photo collection—all without your data ever leaving your machine.
