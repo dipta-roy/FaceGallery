@@ -31,7 +31,7 @@
 - **Python**: 3.9 or higher.
 - **OS**: Windows, macOS, or Linux.
 - **Build Tools**: [Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (Required for installing native dependencies like `dlib` or `insightface` on Windows).
-- [facenet512_weights.h5](https://github.com/dipta-roy/FaceGallery/blob/main/facenet512_weights.h5)
+- **facenet512_weights.h5**: Download [facenet512_weights.h5](https://github.com/dipta-roy/FaceGallery/blob/main/facenet512_weights.h5) here.
 
 ### Installation
 
