@@ -1,8 +1,3 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# FaceGallery – Python package requirements
-# Install with: pip install -r requirements.txt
-# ─────────────────────────────────────────────────────────────────────────────
-
 # ── Core GUI ─────────────────────────────────────────────────────────────────
 PyQt6>=6.5.0
 
@@ -32,6 +27,3 @@ mediapipe>=0.10.0
 
 # ── HEIC / HEIF support on Windows / Linux (optional) ───────────────────────
 # pillow-heif>=0.13.0
-
-# ── Packaging helpers (development only) ─────────────────────────────────────
-# pyinstaller>=6.0.0

@@ -192,7 +192,7 @@ def create_flask_app(db, app_core):
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
-<style>
+  <style>
   :root{
     --bg:#0f1117; --card:#1a1d2e; --accent:#6c63ff; --accent2:#ff6584;
     --text:#e2e8f0; --sub:#94a3b8; --border:#2d3748; --radius:12px;
@@ -206,26 +206,45 @@ def create_flask_app(db, app_core):
     --alert-succ:#dcfce7; --alert-succ-text:#15803d;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden;}
   a{color:var(--accent);text-decoration:none;}
   nav{display:flex;align-items:center;gap:16px;padding:14px 24px;
-      background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+      background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;flex-wrap:wrap;}
   nav .logo{font-size:1.3rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));
-           -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+           -webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:10px;}
   nav .spacer{flex:1;}
-  nav a{color:var(--sub);font-size:.9rem;padding:6px 12px;border-radius:6px;transition:.2s;}
+  nav a{color:var(--sub);font-size:.9rem;padding:6px 12px;border-radius:6px;transition:.2s;white-space:nowrap;}
   nav a:hover{background:var(--border);color:var(--text);}
-  .container{max-width:1400px;margin:0 auto;padding:24px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  
+  .container{max-width:1400px;margin:0 auto;padding:24px;width:100%;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;word-wrap:break-word;}
   .btn{display:inline-block;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;
-       font-size:.9rem;font-weight:600;transition:.2s;}
+       font-size:.9rem;font-weight:600;transition:.2s;text-align:center;}
   .btn-primary{background:var(--accent);color:#fff;}
   .btn-primary:hover{opacity:.85;}
   .btn-danger{background:#e53e3e;color:#fff;}
   .btn-sm{padding:5px 12px;font-size:.8rem;}
+  
   .grid{display:grid;gap:16px;}
   .grid-3{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
   .grid-4{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+  
+  @media (max-width: 768px) {
+    nav { padding: 12px 16px; gap: 8px; justify-content: center; }
+    nav .logo { width: 100%; justify-content: center; margin-bottom: 4px; }
+    nav .spacer { display: none; }
+    nav a, nav span { font-size: 0.8rem; padding: 4px 8px; }
+    .container { padding: 16px; }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    .toolbar { flex-direction: column; align-items: stretch !important; gap: 12px !important; }
+    .toolbar div[style*="flex:1"] { display: none; }
+    .btn { width: 100%; }
+    .btn-sm { width: auto; }
+    .card { padding: 16px; }
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+  }
+
   .person-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
                padding:16px;text-align:center;transition:.2s;cursor:pointer;}
   .person-card:hover{border-color:var(--accent);transform:translateY(-2px);}
@@ -235,6 +254,11 @@ def create_flask_app(db, app_core):
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     display:flex;align-items:center;justify-content:center;
     font-size:2rem;margin:0 auto 12px;}
+  
+  @media (max-width: 480px) {
+    .person-avatar-placeholder, .person-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
+  }
+
   .photo-card{border-radius:10px;overflow:hidden;position:relative;aspect-ratio:1;
               background:var(--border);cursor:pointer;}
   .photo-card img{width:100%;height:100%;object-fit:cover;transition:.3s;}
@@ -262,38 +286,34 @@ def create_flask_app(db, app_core):
   .alert-success{background:var(--alert-succ);border:1px solid #38a169;color:var(--alert-succ-text);}
   .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px;}
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;
-            align-items:center;justify-content:center;z-index:999;}
+            align-items:center;justify-content:center;z-index:999;padding:20px;}
   .lightbox.active{display:flex;}
-  .lightbox img{max-width:90vw;max-height:90vh;border-radius:8px;}
-  .lightbox-close{position:fixed;top:16px;right:24px;font-size:2rem;color:#fff;cursor:pointer;}
+  .lightbox img{max-width:100%;max-height:85vh;object-fit:contain;border-radius:8px;}
+  .lightbox-close{position:fixed;top:16px;right:24px;font-size:2rem;color:#fff;cursor:pointer;z-index:1001;}
   .lightbox-faces-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Allows clicks to pass through to image if no face box is there */
+    pointer-events: none;
   }
   .lightbox-face-box {
     position: absolute;
-    border: 2px solid #6c63ff; /* accent color */
-    background: rgba(108, 99, 255, 0.2); /* semi-transparent fill */
+    border: 2px solid #6c63ff;
+    background: rgba(108, 99, 255, 0.2);
     cursor: pointer;
-    pointer-events: all; /* Make face boxes clickable */
+    pointer-events: all;
     transition: all 0.1s ease-in-out;
   }
-  .lightbox-face-box:hover {
-    background: rgba(108, 99, 255, 0.4);
-    border-width: 3px;
-  }
   .badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:.75rem;
-         background:var(--border);color:var(--sub);}
+         background:var(--border);color:var(--sub);text-align:center;}
   #export-bar{display:none;position:fixed;bottom:0;left:0;right:0;
     background:var(--card);border-top:1px solid var(--border);
     padding:14px 24px;display:flex;gap:12px;align-items:center;z-index:200;}
   .theme-toggle{background:var(--border);border:none;color:var(--text);width:36px;height:36px;
                 border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
-                font-size:1.1rem;transition:.2s;}
+                font-size:1.1rem;transition:.2s;flex-shrink:0;}
   .theme-toggle:hover{background:var(--sub);color:#fff;}
 </style>
 <script>
@@ -356,8 +376,8 @@ def create_flask_app(db, app_core):
     # ──────────────────────────────────────────────────────────────────── #
 
     LOGIN_HTML = BASE_HTML + """
-<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
-<div style="width:380px;">
+<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
+<div style="width:100%; max-width:380px;">
   <div style="text-align:center;margin-bottom:32px;">
     <img src="/static/icons/favicon.png" alt="logo" style="width:80px;height:80px;margin-bottom:12px;">
     <h1 style="font-size:1.8rem;font-weight:700;">FaceGallery</h1>
@@ -796,7 +816,7 @@ async function deleteUser(username) {{
 
         nav = get_nav()
         page = f"""{BASE_HTML}{nav}
-<div class="container" style="max-width:600px;">
+<div class="container" style="width:100%; max-width:600px;">
   <div style="margin-bottom:24px;">
     <h1 style="font-size:1.6rem;font-weight:700;">Create User</h1>
   </div>
@@ -874,7 +894,7 @@ async function deleteUser(username) {{
 
         nav = get_nav()
         page = f"""{BASE_HTML}{nav}
-<div class="container" style="max-width:600px;">
+<div class="container" style="width:100%; max-width:600px;">
   <div style="margin-bottom:24px;">
     <h1 style="font-size:1.6rem;font-weight:700;">Edit User: {username}</h1>
   </div>
@@ -932,7 +952,7 @@ async function deleteUser(username) {{
 
         nav = get_nav()
         page = f"""{BASE_HTML}{nav}
-<div class="container" style="max-width:600px;">
+<div class="container" style="width:100%; max-width:600px;">
   <div style="margin-bottom:24px;">
     <h1 style="font-size:1.6rem;font-weight:700;">Change PIN: {username}</h1>
   </div>
@@ -1129,7 +1149,7 @@ async function deleteUser(username) {{
 
         nav = get_nav()
         page = f"""{BASE_HTML}{nav}
-<div class="container" style="max-width:800px;">
+<div class="container" style="width:100%; max-width:800px;">
   <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:24px;">Admin Dashboard</h1>
   <div class="grid grid-3">
     <a href="/admin/users" class="card" style="text-align:center; padding:32px; text-decoration:none;">
@@ -1222,7 +1242,7 @@ async function deleteUser(username) {{
   </div>
   
   <div id="add-dialog" class="lightbox" style="display:none; align-items:center; justify-content:center;">
-    <div class="card" style="width:500px; padding:24px;" onclick="event.stopPropagation()">
+    <div class="card" style="width:100%; max-width:500px; padding:24px;" onclick="event.stopPropagation()">
       <h2 style="margin-bottom:16px;">Add Existing Folder</h2>
       <p style="font-size:.85rem; color:var(--sub); margin-bottom:16px;">Enter the relative name of an existing folder within your user's upload directory.</p>
       <div class="form-group">
@@ -1237,7 +1257,7 @@ async function deleteUser(username) {{
   </div>
 
   <div id="create-dialog" class="lightbox" style="display:none; align-items:center; justify-content:center;">
-    <div class="card" style="width:500px; padding:24px;" onclick="event.stopPropagation()">
+    <div class="card" style="width:100%; max-width:500px; padding:24px;" onclick="event.stopPropagation()">
       <h2 style="margin-bottom:16px;">Create New Folder</h2>
       <p style="font-size:.85rem; color:var(--sub); margin-bottom:16px;">Create a new directory (e.g., 'my-new-album') inside your personal upload space.</p>
       <div class="form-group">
@@ -1252,7 +1272,7 @@ async function deleteUser(username) {{
   </div>
 
   <div id="upload-dialog" class="lightbox" style="display:none; align-items:center; justify-content:center;">
-    <div class="card" style="width:500px; padding:24px;" onclick="event.stopPropagation()">
+    <div class="card" style="width:100%; max-width:500px; padding:24px;" onclick="event.stopPropagation()">
       <h2 style="margin-bottom:16px;">Upload Images</h2>
       <p id="upload-target-text" style="font-size:.85rem; color:var(--sub); margin-bottom:16px; word-break:break-all;"></p>
       <input type="hidden" id="upload-target-path">
@@ -1263,7 +1283,7 @@ async function deleteUser(username) {{
 
   <!-- Delete Folder Confirmation Modal -->
   <div id="delete-dialog" class="lightbox" style="display:none; align-items:center; justify-content:center;" onclick="document.getElementById('delete-dialog').style.display='none'">
-    <div class="card" style="width:520px; padding:28px; border:2px solid #ef4444;" onclick="event.stopPropagation()">
+    <div class="card" style="width:100%; max-width:520px; padding:28px; border:2px solid #ef4444;" onclick="event.stopPropagation()">
       <h2 style="margin-bottom:8px; color:#ef4444;">⚠️ Delete Folder &amp; Images</h2>
       <p style="color:var(--sub); font-size:.9rem; margin-bottom:16px;">This will <strong style='color:var(--text);'>permanently delete all image files</strong> from disk inside <code id="del-folder-name" style="background:var(--border);padding:2px 6px;border-radius:4px;"></code> and remove them from the index.</p>
       <div style="background:#1a0a0a; border:1px solid #7f1d1d; border-radius:8px; padding:12px 14px; margin-bottom:20px; font-size:.85rem; color:#fca5a5;">
@@ -2392,7 +2412,7 @@ async function rejectFaces() {{
         
         nav = get_nav()
         page = f"""{BASE_HTML}{nav}
-<div class="container" style="max-width:600px;">
+<div class="container" style="width:100%; max-width:600px;">
   <div style="margin-bottom:24px;">
     <h1 style="font-size:1.6rem;font-weight:700;">Edit Face</h1>
     <p style="color:var(--sub);margin-top:4px;">Manage person association and name for this face.</p>
